@@ -40,7 +40,6 @@ class Video(Base):
 	id_video :Mapped[int] = mapped_column(primary_key=True)
 	Title : Mapped[str] = mapped_column(String(30))
 	Dialogues: Mapped[List["Transcript"]] = relationship(back_populates="Video", cascade="all, delete-orphan")
-	videos_recommendation: Mapped[List["Video"]] = relationship(back_populates="Video")
 	def __repr__(self) -> str:
 		return f"Video(id_video={self.id_video!r}, Title={self.Title!r}"
 
@@ -53,12 +52,17 @@ association_table_transcript_emotion = Table(
 )
 
 
-class videos_recommendation(Base):
-    __tablename__ = "videos_recommendation"
+class videos_recommendation_user(Base):
+    __tablename__ = "videos_recommendation_user"
     id_video_ref: Mapped[int] = mapped_column(ForeignKey("Video.id_video"), primary_key=True)
     id_video_reco: Mapped[int] = mapped_column(ForeignKey("Video.id_video"), primary_key=True)
+    id_user: Mapped[int] = mapped_column(ForeignKey("User.id_user"), primary_key=True)
     Rank: Mapped[int] = mapped_column(Integer)
+    note_recommendation: Mapped[int] = mapped_column(Integer)
     video: Mapped["Video"] = relationship()
+
+
+
 
 
 
@@ -82,12 +86,6 @@ class Emotion(Base):
 		return f"Emotion(id_emotion={self.id_emotion!r}, Name={self.Name!r}"
 
 
-class User_video_review(Base):
-	__tablename__ = "User_video_review"
-	id_user :Mapped[int] = mapped_column(ForeignKey("User.id_user"), primary_key=True)
-	id_video :Mapped[int] = mapped_column(ForeignKey("Video.id_video"), primary_key=True)
-	note_recommendation: Mapped[int] = mapped_column(Integer)
-	video: Mapped["Video"] = relationship()
 
 
 

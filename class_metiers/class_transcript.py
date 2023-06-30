@@ -3,4 +3,3 @@ class transcript:
   	self.id_video=id_video
   	self.num_dialogue=num_dialogue
     self.text = text
-    self.emotion = emotion
