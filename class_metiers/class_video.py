@@ -1,5 +1,5 @@
 class Video:
-  def __init__(self, title, dialogue, rank_videos_reco):
-  	self.id_video=0
+  def __init__(self, id_video,title, dialogue):
+  	self.id_video=id_video
   	self.title=title
   	self.dialogues=dialogues
