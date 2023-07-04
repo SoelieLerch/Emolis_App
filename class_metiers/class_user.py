@@ -4,6 +4,10 @@ class User:
   	self.login=login
   	self.age=age
   	self.genre=genre
+  	self.video_notees={}
+  def set_video_notee(video_ref, video_reco, note, rang):
+  	self.video_notees[video_ref.title]=(video_reco.title, note, rang)
+
 
 
 
