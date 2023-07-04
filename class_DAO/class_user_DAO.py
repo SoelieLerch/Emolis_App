@@ -14,10 +14,7 @@ from sqlalchemy import update
 
 class User_DAO():
 	def __init__(self):
-		self.id_user=0
-		self.login=""
-		self.age=0
-		self.genre=""
+		pass
 	def add_user(self, login, age, genre):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		with Session(engine) as session:
@@ -62,14 +59,7 @@ class User_DAO():
 			for video_reco in session.scalars(video_reco):
 				video_reco=class_video.Video(video_reco.id_video, video_reco.Title)
 			videos_reco.append(video_reco)
-		return videos_reco
-	def find_note_reco_from_user(self, id_video_ref, id_video_reco, id_user):
-		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
-		session = Session(engine)
-		stmt = select(videos_recommendation_user).where(videos_recommendation_user.id_user==id_user, videos_recommendation_user.id_video_ref==id_video_ref, videos_recommendation_user.id_video_reco==id_video_reco)
-		for video_reco in session.scalars(stmt):
-			note=video_reco.note_recommendation
-		return note		
+		return videos_reco	
 
 
 

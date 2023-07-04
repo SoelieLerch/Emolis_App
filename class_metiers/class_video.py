@@ -5,4 +5,5 @@ class Video:
   	self.dialogues=[]
   def set_dialogues(self, dialogues):
   	self.dialogues=dialogues
-
+  def get_title():
+  	return self.title

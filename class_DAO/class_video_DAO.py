@@ -12,9 +12,7 @@ from class_metiers import class_video, class_transcript
 
 class Video_DAO():
 	def __init__(self):
-		self.id_video=0
-		self.Title=""
-		self.dialogues=[]
+		pass
 	def find_all(self, number,page):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
@@ -31,20 +29,20 @@ class Video_DAO():
 			video=Video(Title=title)
 			session.add(video)
 			session.commit()
-	def find_video_from_title(self, title):
+	def find_video_from_title(self, title, number, page):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
 		stmt = select(Video).where(Video.Title==title)
 		for video in session.scalars(stmt):
 			video=class_video.Video(video.id_video,video.Title)
 		return video
-	def find_transcripts(self,id_video):
+	def find_transcripts(self,id_video, page, number):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
-		stmt = select(Transcript).where(Transcript.id_video==id_video)
+		stmt = select(Transcript).where(Transcript.id_video==id_video, Transcript.id_transcript>=number*page, Transcript.id_transcript<=number*(page+1))
 		transcripts=[]
 		for transcript in session.scalars(stmt):
-			transcript=class_transcript.Transcript(transcript.id_transcript,transcript.id_video, transcript.id_transcript, transcript.Text)
+			transcript=class_transcript.Transcript(transcript.id_transcript,transcript.id_video, transcript.id_transcript, transcript.Text, transcript.begin_utterance, transcript.end_utterance)
 			transcripts.append(transcript)
 		return transcripts	
 
@@ -65,6 +63,8 @@ class Transcript(Base):
 	id_video: Mapped[int] = mapped_column(ForeignKey("Video.id_video"))
 	Num_dialogue: Mapped[int] = mapped_column(Integer)
 	Text :Mapped[str] = mapped_column(String(150))
+	begin_utterance :Mapped[int] = mapped_column(Integer)
+	end_utterance :Mapped[int] = mapped_column(Integer)
 	def __repr__(self) -> str:
 		return f"Transcript(id_transcript={self.id_transcript!r}, Num_dialogue={self.Num_dialogue!r},Text={self.Text!r})"
 

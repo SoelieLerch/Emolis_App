@@ -5,8 +5,11 @@ class User:
   	self.age=age
   	self.genre=genre
   	self.video_notees={}
-  def set_video_notee(video_ref, video_reco, note, rang):
-  	self.video_notees[video_ref.title]=(video_reco.title, note, rang)
+  def set_video_notee(video_ref, video_reco, note, rank):
+  	self.video_notees[video_ref.title]={}
+  	self.video_notees[video_ref.title][video_reco.title]=(note, rank)
+  def get_note_of_one_recommendation(video_ref, video_reco):
+  	return self.video_notees[video_ref.title][video_reco.title][0]
 
 
 

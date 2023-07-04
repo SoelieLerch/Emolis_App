@@ -10,8 +10,7 @@ from class_metiers import class_emotion
 
 class Emotion_DAO:
 	def __init__(self):
-		self.id_emotion=0
-		self.name=""
+		pass
 	def add_Emotion(self, name):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		with Session(engine) as session:
