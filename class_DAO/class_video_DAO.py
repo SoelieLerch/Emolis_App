@@ -38,13 +38,13 @@ class Video_DAO():
 		for video in session.scalars(stmt):
 			video=class_video.Video(video.id_video,video.Title)
 		return video
-	def find_transcripts(self,video):
+	def find_transcripts(self,id_video):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
-		stmt = select(Transcript).where(Transcript.id_video==video.id_video)
+		stmt = select(Transcript).where(Transcript.id_video==id_video)
 		transcripts=[]
 		for transcript in session.scalars(stmt):
-			transcript=class_transcript.Transcript(transcript.id_video, transcript.id_transcript, transcript.Text)
+			transcript=class_transcript.Transcript(transcript.id_transcript,transcript.id_video, transcript.id_transcript, transcript.Text)
 			transcripts.append(transcript)
 		return transcripts	
 

@@ -8,7 +8,7 @@ from sqlalchemy import select
 from class_metiers import class_emotion
 
 
-class EmotionDAO:
+class Emotion_DAO:
 	def __init__(self):
 		self.id_emotion=0
 		self.name=""
@@ -30,7 +30,3 @@ class Emotion(Base):
 		return f"Emotion(id_emotion={self.id_emotion!r}, Name={self.Name!r}"
 
 
-engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
-with Session(engine) as session:
-	session.query(Emotion).delete()
-	session.commit()
