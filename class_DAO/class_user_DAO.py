@@ -52,6 +52,17 @@ class User_DAO():
 			for video_reco in session.scalars(video_reco):
 				video_reco=class_video.Video(video_reco.id_video, video_reco.Title)
 		return video_reco
+	def find_video_reco_first_ranks(self, id_video_ref, id_user, seuil):
+		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
+		session = Session(engine)
+		stmt = select(videos_recommendation_user).where(videos_recommendation_user.id_user==id_user, videos_recommendation_user.id_video_ref==id_video_ref, videos_recommendation_user.Rank<=seuil)
+		videos_reco=[]
+		for video_reco in session.scalars(stmt):
+			video_reco = select(Video).where(Video.id_video==video_reco.id_video_reco)
+			for video_reco in session.scalars(video_reco):
+				video_reco=class_video.Video(video_reco.id_video, video_reco.Title)
+			videos_reco.append(video_reco)
+		return videos_reco
 	def find_note_reco_from_user(self, id_video_ref, id_video_reco, id_user):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
