@@ -12,6 +12,8 @@ from class_metiers import class_user, class_video
 from class_DAO import class_video_DAO
 from sqlalchemy import update
 
+#client serveur webrtc, streamer une video
+
 class User_DAO():
 	def __init__(self):
 		pass
@@ -25,6 +27,7 @@ class User_DAO():
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
 		stmt = select(User).where(User.login==login)
+		user=None
 		for user in session.scalars(stmt):
 			user=class_user.User(user.id_user, user.login, user.age, user.genre)
 		return user
@@ -47,7 +50,7 @@ class User_DAO():
 		for video_reco in session.scalars(stmt):
 			video_reco = select(Video).where(Video.id_video==video_reco.id_video_reco)
 			for video_reco in session.scalars(video_reco):
-				video_reco=class_video.Video(video_reco.id_video, video_reco.Title)
+				video_reco=class_video.Video(video_reco.id_video, video_reco.Title, video_reco.Path)
 		return video_reco
 	def find_video_reco_first_ranks(self, id_video_ref, id_user, seuil):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
@@ -57,7 +60,7 @@ class User_DAO():
 		for video_reco in session.scalars(stmt):
 			video_reco = select(Video).where(Video.id_video==video_reco.id_video_reco)
 			for video_reco in session.scalars(video_reco):
-				video_reco=class_video.Video(video_reco.id_video, video_reco.Title)
+				video_reco=class_video.Video(video_reco.id_video, video_reco.Title, video_reco.Path)
 			videos_reco.append(video_reco)
 		return videos_reco	
 
@@ -74,12 +77,14 @@ class User(Base):
 	def __repr__(self) -> str:
 		return f"User(id_user={self.id_user!r}, login={self.login!r}, age={self.age!r}, genre={self.genre!r})"
 
+
 class Video(Base):
 	__tablename__ = "Video"
 	id_video :Mapped[int] = mapped_column(primary_key=True)
 	Title : Mapped[str] = mapped_column(String(30))
+	Path : Mapped[str] = mapped_column(String(150))
 	def __repr__(self) -> str:
-		return f"Video(id_video={self.id_video!r}, Title={self.Title!r}"
+		return f"Video(id_video={self.id_video!r}, Title={self.Title!r}, Path={self.Path!r}"
 
 
 class videos_recommendation_user(Base):
@@ -89,4 +94,5 @@ class videos_recommendation_user(Base):
     id_user: Mapped[int] = mapped_column(ForeignKey("User.id_user"), primary_key=True)
     Rank: Mapped[int] = mapped_column(Integer)
     note_recommendation: Mapped[int] = mapped_column(Integer)
+
 

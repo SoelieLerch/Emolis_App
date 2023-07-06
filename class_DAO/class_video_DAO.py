@@ -19,24 +19,41 @@ class Video_DAO():
 		stmt = select(Video).where(Video.id_video>=number*page, Video.id_video<=number*(page+1))
 		videos=[]
 		for video in session.scalars(stmt):
-			video=class_video.Video(video.id_video,video.Title)
-			video.dialogues=find_transcripts(video)
+			video=class_video.Video(video.id_video,video.Title, video.Path)
 			videos.append(video)
 		return videos
-	def add_Video(self, title):
+	def add_Video(self, title, path):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		with Session(engine) as session:
-			video=Video(Title=title)
+			video=Video(Title=title, Path=path)
 			session.add(video)
 			session.commit()
-	def find_video_from_title(self, title, number, page):
+	def find_video_from_title(self, title):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
 		stmt = select(Video).where(Video.Title==title)
+		video=None
 		for video in session.scalars(stmt):
-			video=class_video.Video(video.id_video,video.Title)
+			video=class_video.Video(video.id_video,video.Title, video.Path)
 		return video
-	def find_transcripts(self,id_video, page, number):
+	def find_video_from_id(self, id_video):
+		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
+		session = Session(engine)
+		stmt = select(Video).where(Video.id_video==id_video)
+		video=None
+		for video in session.scalars(stmt):
+			video=class_video.Video(video.id_video,video.Title, video.Path)
+		return video
+
+	def find_video_from_path(self, path):
+		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
+		session = Session(engine)
+		stmt = select(Video).where(Video.Path==path)
+		video=None
+		for video in session.scalars(stmt):
+			video=class_video.Video(video.id_video,video.Title, video.Path)
+		return video
+	def find_transcripts(self,id_video, number, page):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
 		stmt = select(Transcript).where(Transcript.id_video==id_video, Transcript.id_transcript>=number*page, Transcript.id_transcript<=number*(page+1))
@@ -55,8 +72,9 @@ class Video(Base):
 	__tablename__ = "Video"
 	id_video :Mapped[int] = mapped_column(primary_key=True)
 	Title : Mapped[str] = mapped_column(String(30))
+	Path:Mapped[str] = mapped_column(String(150))
 	def __repr__(self) -> str:
-		return f"Video(id_video={self.id_video!r}, Title={self.Title!r}"
+		return f"Video(id_video={self.id_video!r}, Title={self.Title!r}, Path={self.Path!r}"
 class Transcript(Base):
 	__tablename__ = "Transcript"
 	id_transcript : Mapped[int] = mapped_column(primary_key=True)
