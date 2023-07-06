@@ -62,6 +62,13 @@ def find_all_videos(number, page):
 		data_request.append({"id_video":v.id_video, "Title":v.title, "Path":v.path})
 	return data_request
 
+@app.get("/video/{id_video}")
+def find_video_from_id(id_video):
+	videoDAO=class_video_DAO.Video_DAO()
+	video=videoDAO.find_video_from_id(id_video)
+	return {"id_video":video.id_video, "Title":video.title, "Path":video.path}
+
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -39,8 +39,17 @@ def find_all_videos(number, page):
     print(data)
     return data
 
+def find_video_id(id):
+    response = client.get(
+        "/video/"+str(id))
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    return data    
+
 
 #create_user("lilou783", 28, "femme")
 user=get_user("lilou783")
-create_video("baby2", "path")
-find_all_videos(10,0)
+#create_video("baby2", "path")
+#find_all_videos(10,0)
+find_video_id(2)
