@@ -111,6 +111,15 @@ def find_video_reco_from_rank(id_video_ref, id_user, rank):
     print(data)
     return data
 
+def note_video_recommendation(id_video_ref,id_video_reco, id_user,rank, note):
+    response = client.patch("/emotion_rank/",
+        json={"id_video_ref":id_video_ref, "id_video_reco": id_video_reco,"id_user":id_user, "rank":rank,"note":note},
+    )
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    return data
+
 
 #create_user("lilou", 28, "femme")
 #create_video("babyboom", "moi")
@@ -118,7 +127,6 @@ def find_video_reco_from_rank(id_video_ref, id_user, rank):
 u=get_user("lilou")
 v1=find_video_title("babyboom")
 v2=find_video_title("papyboom")
-find_video_reco_first_ranks(v1["id_video"], u["id_user"], 0)
-#init_reco_video(int(v1["id_video"]), v2["id_video"], u["id_user"], 1, 0)
-
+find_video_reco_first_ranks(v1["id_video"], u["id_user"], 1)
+note_video_recommendation(v1["id_video"], v2["id_video"],u["id_user"], 0, 3)
 

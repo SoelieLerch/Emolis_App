@@ -142,6 +142,21 @@ def find_video_reco_first_ranks(id_video_ref, id_user, seuil):
 	for video in videos :
 		request.append({"id_video":video.id_video, "Title":video.title, "Path":video.path})
 	return JSONResponse(status_code=200, content=request)
+@app.patch("/emotion_rank/")
+def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):
+	userDAO=class_user_DAO.User_DAO()
+	userDAO.note_reco_video(videos_recommendation_user.id_video_ref, videos_recommendation_user.id_video_reco, videos_recommendation_user.id_user, videos_recommendation_user.note)
+	return 	JSONResponse(status_code=200, content={"id_video_ref":videos_recommendation_user.id_video_ref, "id_video_reco":videos_recommendation_user.id_video_reco, "id_user":videos_recommendation_user.id_user, "note":videos_recommendation_user.note})
+
+@app.get("/emotion_rank_one/")
+def find_video_reco_first_ranks(id_video_ref, id_user, rank):
+	userDAO=class_user_DAO.User_DAO()
+	videos=userDAO.find_video_reco_from_rank(id_video_ref, id_user, rank)
+	request=[]
+	for video in videos :
+		request.append({"id_video":video.id_video, "Title":video.title, "Path":video.path})
+	return JSONResponse(status_code=200, content=request)
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
