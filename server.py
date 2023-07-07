@@ -18,6 +18,7 @@ class User(BaseModel):
 	login: str
 	age: int
 	genre : str
+	physio_bool:bool
 
 class Transcript(BaseModel):
 	title:str
@@ -41,7 +42,7 @@ def create_user(user :  User, status_code=201):
 	userDAO=class_user_DAO.User_DAO()
 	user_exist=userDAO.find_user_from_name(user.login)
 	if user_exist==None :
-		userDAO.add_user(user.login, user.age, user.genre)
+		userDAO.add_user(user.login, user.age, user.genre, user.physio_bool)
 		return JSONResponse(status_code=status.HTTP_201_CREATED, content={"login": user.login, "age": user.age, "genre":user.genre})
 	else :
 		raise HTTPException(status_code=405, detail="Error 405 : Login already exist")
@@ -142,11 +143,6 @@ def find_video_reco_first_ranks(id_video_ref, id_user, seuil):
 	for video in videos :
 		request.append({"id_video":video.id_video, "Title":video.title, "Path":video.path})
 	return JSONResponse(status_code=200, content=request)
-@app.patch("/emotion_rank/")
-def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):
-	userDAO=class_user_DAO.User_DAO()
-	userDAO.note_reco_video(videos_recommendation_user.id_video_ref, videos_recommendation_user.id_video_reco, videos_recommendation_user.id_user, videos_recommendation_user.note)
-	return 	JSONResponse(status_code=200, content={"id_video_ref":videos_recommendation_user.id_video_ref, "id_video_reco":videos_recommendation_user.id_video_reco, "id_user":videos_recommendation_user.id_user, "note":videos_recommendation_user.note})
 
 @app.get("/emotion_rank_one/")
 def find_video_reco_first_ranks(id_video_ref, id_user, rank):
@@ -157,6 +153,11 @@ def find_video_reco_first_ranks(id_video_ref, id_user, rank):
 		request.append({"id_video":video.id_video, "Title":video.title, "Path":video.path})
 	return JSONResponse(status_code=200, content=request)
 
+@app.patch("/emotion_rank/")
+def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):
+	userDAO=class_user_DAO.User_DAO()
+	userDAO.note_reco_video(videos_recommendation_user.id_video_ref, videos_recommendation_user.id_video_reco, videos_recommendation_user.id_user, videos_recommendation_user.note)
+	return 	JSONResponse(status_code=200, content={"id_video_ref":videos_recommendation_user.id_video_ref, "id_video_reco":videos_recommendation_user.id_video_reco, "id_user":videos_recommendation_user.id_user, "note":videos_recommendation_user.note})
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)

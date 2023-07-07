@@ -4,8 +4,8 @@ from class_DAO import class_emotion_DAO, class_transcript_DAO, class_video_DAO,c
 
 client=TestClient(app)
 
-def create_user(login, age, genre):
-    response=client.put("/user/", json={"login": login, "age": age, "genre":genre})
+def create_user(login, age, genre, physio_bool):
+    response=client.put("/user/", json={"login": login, "age": age, "genre":genre, "physio_bool":physio_bool})
     assert response.status_code == 201, response.text
     data = response.json()
     print(data)
@@ -121,9 +121,9 @@ def note_video_recommendation(id_video_ref,id_video_reco, id_user,rank, note):
     return data
 
 
-#create_user("lilou", 28, "femme")
-#create_video("babyboom", "moi")
-#create_video("papyboom", "toi")
+create_user("lilou", 28, "femme", True)
+create_video("babyboom", "moi")
+create_video("papyboom", "toi")
 u=get_user("lilou")
 v1=find_video_title("babyboom")
 v2=find_video_title("papyboom")
