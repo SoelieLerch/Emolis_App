@@ -64,7 +64,23 @@ class User_DAO():
 				video_reco=class_video.Video(video_reco.id_video, video_reco.Title, video_reco.Path)
 			videos_reco.append(video_reco)
 		return videos_reco	
-
+	def find_noted_videos(self, id_user, page, number):
+		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
+		session = Session(engine)
+		notes_reco=[]
+		stmt=select(videos_recommendation_user).where(videos_recommendation_user.id_user==id_user)
+		for noted_video in session.scalars(stmt) :
+			video_ref=select(Video).where(Video.id_video==noted_video.id_video_ref)
+			video_reco=select(Video).where(Video.id_video==noted_video.id_video_reco)
+			rank=noted_video.Rank
+			note=noted_video.note_recommendation
+			for v in session.scalars(video_ref):
+				video_ref=v
+			for v in session.scalars(video_reco):
+				video_reco=v
+			note_reco=(video_ref, video_reco, rank, note)
+			notes_reco.append(note_reco)
+		return notes_reco
 
 
 class Base(DeclarativeBase):

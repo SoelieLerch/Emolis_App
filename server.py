@@ -153,11 +153,21 @@ def find_video_reco_first_ranks(id_video_ref, id_user, rank):
 		request.append({"id_video":video.id_video, "Title":video.title, "Path":video.path})
 	return JSONResponse(status_code=200, content=request)
 
+@app.get("/note_video_user/")
+def find_noted_videos(id_user, page, number):
+	userDAO=class_user_DAO.User_DAO()
+	notes=userDAO.find_noted_videos(int(id_user), int(page), int(number))
+	request=[]
+	for note in notes :
+		request.append({"id_video_ref":note[0].id_video, "title_ref":note[0].Title, "path_ref":note[0].Path,"id_video_reco":note[1].id_video, "title_reco":note[1].Title, "path_reco":note[1].Path, "rank":note[2], "note":note[3]})
+	return JSONResponse(status_code=200, content=request)
+
 @app.patch("/emotion_rank/")
 def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):
 	userDAO=class_user_DAO.User_DAO()
 	userDAO.note_reco_video(videos_recommendation_user.id_video_ref, videos_recommendation_user.id_video_reco, videos_recommendation_user.id_user, videos_recommendation_user.note)
 	return 	JSONResponse(status_code=200, content={"id_video_ref":videos_recommendation_user.id_video_ref, "id_video_reco":videos_recommendation_user.id_video_reco, "id_user":videos_recommendation_user.id_user, "note":videos_recommendation_user.note})
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
