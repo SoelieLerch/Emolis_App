@@ -59,7 +59,7 @@ class Video_DAO():
 		stmt = select(Transcript).where(Transcript.id_video==id_video, Transcript.id_transcript>=number*page, Transcript.id_transcript<=number*(page+1))
 		transcripts=[]
 		for transcript in session.scalars(stmt):
-			transcript=class_transcript.Transcript(transcript.id_transcript,transcript.id_video, transcript.id_transcript, transcript.Text, transcript.begin_utterance, transcript.end_utterance)
+			transcript=class_transcript.Transcript(transcript.id_transcript,transcript.id_video, transcript.Num_dialogue, transcript.Text, transcript.begin_utterance, transcript.end_utterance)
 			transcripts.append(transcript)
 		return transcripts	
 

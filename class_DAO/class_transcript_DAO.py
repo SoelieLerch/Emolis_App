@@ -15,10 +15,7 @@ from sqlalchemy import String
 
 class Transcript_DAO :
 	def __init__(self):
-		self.id_transcript=0
-		self.id_video=0
-		self.text=""
-		self.emotions=[]
+		pass
 	def add_Transcript_from_video(self, id_video, num_dialogue, text, begin_utterance, end_utterance):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
@@ -26,6 +23,7 @@ class Transcript_DAO :
 			transcript=Transcript(id_video=id_video, Num_dialogue=num_dialogue, Text=text, begin_utterance=begin_utterance, end_utterance=end_utterance)
 			session.add(transcript)
 			session.commit()
+
 
 	def get_emotions_from_transcript(self, id_transcript):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
@@ -57,8 +55,9 @@ class Transcript_DAO :
 					emotion=Emotion(id_emotion=emotions_from_transcript[i].id_emotion,Name=emotions_from_transcript[i].name)
 					transcript_emotion=Transcript_emotion(id_transcript=transcript.id_transcript, id_emotion=emotion.id_emotion)
 					session.add(transcript_emotion)
+					session.commit()
 					i=i+1
-		session.commit()
+
 class Base(DeclarativeBase):
 	pass
 

@@ -70,14 +70,7 @@ def create_transcript(transcript:Transcript, status_code=201):
 	return JSONResponse(status_code=status.HTTP_201_CREATED, content={"title":transcript.title, "num_dialogue":transcript.num_dialogue, "text":transcript.text,"begin_utterance":transcript.begin_utterance, "end_utterance":transcript.end_utterance})
 
 
-@app.get("/transcript")
-def get_transcripts(id_video, number, page, status_code=201):
-	video_DAO=class_video_DAO.Video_DAO()
-	transcripts=video_DAO.find_transcripts(int(id_video),int(number), int(page))
-	request=[]
-	for Transcript in transcripts :
-		request.append({"title":transcript.title, "num_dialogue":transcript.num_dialogue, "text":transcript.text,"begin_utterance":transcript.begin_utterance, "end_utterance":transcript.end_utterance})
-	return JSONResponse(status_code=status.HTTP_201_CREATED, content=request)
+
 @app.get("/user/{login}")
 def get_user(login :str):
 	userDAO=class_user_DAO.User_DAO()
@@ -103,11 +96,23 @@ def find_video_from_id(id_video):
 	video=videoDAO.find_video_from_id(id_video)
 	return {"id_video":video.id_video, "Title":video.title, "Path":video.path}
 
+@app.get("/transcript")
+def get_transcripts(id_video, number, page):
+	video_DAO=class_video_DAO.Video_DAO()
+	transcripts=video_DAO.find_transcripts(int(id_video),int(number), int(page))
+	request=[]
+	for transcript in transcripts :
+		request.append({"id_transcript":transcript.id_transcript ,"id_video":transcript.id_video, "num_dialogue":transcript.num_dialogue, "text":transcript.text,"begin_utterance":transcript.begin_utterance, "end_utterance":transcript.end_utterance})
+	return JSONResponse(status_code=200, content=request)
 
-
-
-#add_Transcript_from_video(self, id_video, num_dialogue, text, emotions)
-
+@app.get("/emotions/")
+def get_emotions_from_transcript(id_transcript):
+	transcriptDAO=class_transcript_DAO.Transcript_DAO()
+	emotions=transcriptDAO.get_emotions_from_transcript(int(id_transcript))
+	request=[]
+	for emotion in emotions :
+		request.append({"id_emotion":emotion.id_emotion, "name":emotion.name})
+	return JSONResponse(status_code=200, content=request)		
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)

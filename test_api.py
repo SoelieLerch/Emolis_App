@@ -5,10 +5,7 @@ from class_DAO import class_emotion_DAO, class_transcript_DAO, class_video_DAO
 client=TestClient(app)
 
 def create_user(login, age, genre):
-    response = client.put(
-        "/user/",
-        json={"login": login, "age": age, "genre":genre},
-    )
+    response=client.put("/user/", json={"login": login, "age": age, "genre":genre})
     assert response.status_code == 201, response.text
     data = response.json()
     print(data)
@@ -67,12 +64,23 @@ def create_transcript(title, num_dialogue, text,begin_utterance, end_utterance, 
 
 def get_transcripts(id_video, number, page):
     response = client.get(
-        "/video?id_video="+str(id_video)+"&number="+str(number)+"&page="+str(page))
+        "/transcript?id_video="+str(id_video)+"&number="+str(number)+"&page="+str(page))
     assert response.status_code == 200, response.text
     data = response.json()
     print(data)
     return data
+
+def get_emotions_from_transcript(id_transcript):
+    response = client.get(
+        "/emotions?id_transcript="+str(id_transcript))
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    return data
+
 create_video("babyboom", "moi")
 create_emotion("Joie")
-create_transcript("babyboom", 0, "I love you", 0, 1, ["Joie"])
-get_transcripts(1, 50, 0)
+create_emotion("Anger")
+create_transcript("babyboom", 0, "I love you", 0, 1, ["Joie", "Anger"])
+get_emotions_from_transcript(1)
+
