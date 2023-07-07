@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy import Boolean
 from class_metiers import class_user, class_video
 from class_DAO import class_video_DAO
 from sqlalchemy import update
@@ -17,10 +18,10 @@ from sqlalchemy import update
 class User_DAO():
 	def __init__(self):
 		pass
-	def add_user(self, login, age, genre):
+	def add_user(self, login, age, genre, physio_bool):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		with Session(engine) as session:
-			user=User(login=login, age=age, genre=genre)
+			user=User(login=login, age=age, genre=genre, physio_bool=physio_bool)
 			session.add(user)
 			session.commit()
 	def find_user_from_name(self, login):
@@ -29,7 +30,7 @@ class User_DAO():
 		stmt = select(User).where(User.login==login)
 		user=None
 		for user in session.scalars(stmt):
-			user=class_user.User(user.id_user, user.login, user.age, user.genre)
+			user=class_user.User(user.id_user, user.login, user.age, user.genre, user.physio_bool)
 		return user
 	def init_reco_video(self, id_video_ref, id_video_reco, id_user, rank):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
@@ -74,8 +75,9 @@ class User(Base):
 	login: Mapped[str] = mapped_column(String(50))
 	age: Mapped[int] = mapped_column(Integer)
 	genre : Mapped[str] = mapped_column(String(50))
+	physio_bool :Mapped[bool]=mapped_column(Boolean)
 	def __repr__(self) -> str:
-		return f"User(id_user={self.id_user!r}, login={self.login!r}, age={self.age!r}, genre={self.genre!r})"
+		return f"User(id_user={self.id_user!r}, login={self.login!r}, age={self.age!r}, genre={self.genre!r}, physio_bool={self.physio_bool!r})"
 
 
 class Video(Base):
