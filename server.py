@@ -7,6 +7,13 @@ import uvicorn
 from fastapi.responses import JSONResponse
 
 
+class Videos_recommendation_user(BaseModel):
+    id_video_ref : int
+    id_video_reco : int
+    id_user : int
+    rank : int
+    note : int
+
 class User(BaseModel):
 	login: str
 	age: int
@@ -69,6 +76,11 @@ def create_transcript(transcript:Transcript, status_code=201):
 	transcript_DAO.add_emotions_to_transcript(video.id_video, transcript.num_dialogue, transcript.emotions)
 	return JSONResponse(status_code=status.HTTP_201_CREATED, content={"title":transcript.title, "num_dialogue":transcript.num_dialogue, "text":transcript.text,"begin_utterance":transcript.begin_utterance, "end_utterance":transcript.end_utterance})
 
+@app.put("/emotion_rank/")
+def init_reco_video(videos_recommendation_user : Videos_recommendation_user):
+	userDAO=class_user_DAO.User_DAO()
+	userDAO.init_reco_video(videos_recommendation_user.id_video_ref, videos_recommendation_user.id_video_reco, videos_recommendation_user.id_user, videos_recommendation_user.rank)
+	return JSONResponse(status_code=status.HTTP_201_CREATED, content={"id_video_ref":videos_recommendation_user.id_video_ref, "id_video_reco": videos_recommendation_user.id_video_reco,"id_user":videos_recommendation_user.id_user, "rank":videos_recommendation_user.rank, "note":videos_recommendation_user.note})
 
 
 @app.get("/user/{login}")
@@ -80,7 +92,7 @@ def get_user(login :str):
 	else :
 		raise HTTPException(status_code=404, detail="Error 404 : Login not found")
 
-@app.get("/video/")
+@app.get("/videos/")
 def find_all_videos(number, page):
 	videoDAO=class_video_DAO.Video_DAO()
 	videos=videoDAO.find_all(int(number), int(page))
@@ -95,6 +107,14 @@ def find_video_from_id(id_video):
 	videoDAO=class_video_DAO.Video_DAO()
 	video=videoDAO.find_video_from_id(id_video)
 	return {"id_video":video.id_video, "Title":video.title, "Path":video.path}
+
+
+@app.get("/video/")
+def find_video_from_title(name):
+	videoDAO=class_video_DAO.Video_DAO()
+	video=videoDAO.find_video_from_title(name)
+	return {"id_video":video.id_video, "Title":video.title, "Path":video.path}
+
 
 @app.get("/transcript")
 def get_transcripts(id_video, number, page):
@@ -113,6 +133,7 @@ def get_emotions_from_transcript(id_transcript):
 	for emotion in emotions :
 		request.append({"id_emotion":emotion.id_emotion, "name":emotion.name})
 	return JSONResponse(status_code=200, content=request)		
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)

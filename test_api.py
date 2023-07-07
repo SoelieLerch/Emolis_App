@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from server import app
-from class_DAO import class_emotion_DAO, class_transcript_DAO, class_video_DAO
+from class_DAO import class_emotion_DAO, class_transcript_DAO, class_video_DAO,class_user_DAO
 
 client=TestClient(app)
 
@@ -29,7 +29,7 @@ def create_video(title, path):
 
 def find_all_videos(number, page):
     response = client.get(
-        "/video?number="+str(number)+"&page="+str(page))
+        "/videos?number="+str(number)+"&page="+str(page))
     assert response.status_code == 200, response.text
     data = response.json()
     print(data)
@@ -42,6 +42,15 @@ def find_video_id(id):
     data = response.json()
     print(data)
     return data    
+
+def find_video_title(name):
+    response = client.get(
+        "/video?name="+name)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    return data  
+    
 
 def create_emotion(name):
     response = client.put(
@@ -78,9 +87,26 @@ def get_emotions_from_transcript(id_transcript):
     print(data)
     return data
 
+def init_reco_video(id_video_ref, id_video_reco, id_user, rank, note):
+    
+    response = client.put(
+        "/emotion_rank/",
+        json={"id_video_ref":id_video_ref, "id_video_reco": id_video_reco,"id_user":id_user, "rank":rank, "note":note},
+    )
+    print(response.status_code)
+    assert response.status_code == 201, response.text
+    data = response.json()
+    print(data)
+
+create_user("lilou", 28, "femme")
 create_video("babyboom", "moi")
-create_emotion("Joie")
-create_emotion("Anger")
-create_transcript("babyboom", 0, "I love you", 0, 1, ["Joie", "Anger"])
-get_emotions_from_transcript(1)
+create_video("papyboom", "toi")
+u=get_user("lilou")
+v1=find_video_title("babyboom")
+v2=find_video_title("papyboom")
+init_reco_video(int(v1["id_video"]), v2["id_video"], u["id_user"], 1,0)
+
+
+
+#video_ref, video_reco, user
 
