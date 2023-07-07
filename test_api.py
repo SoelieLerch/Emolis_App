@@ -127,13 +127,21 @@ def find_noted_videos(id_user, page, number):
     print(data)
     return data
 
+def find_noted_videos2(id_video_ref, page, number):
+    response = client.get("/note_video_ref?id_video_ref="+str(id_video_ref)+"&page="+str(page)+"&number="+str(number))
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    return data
+
 #create_user("lilou", 28, "femme", True)
 #create_video("babyboom", "moi")
 #create_video("papyboom", "toi")
-#u=get_user("lilou")
-#v1=find_video_title("babyboom")
-#v2=find_video_title("papyboom")
+u=get_user("lilou")
+v1=find_video_title("babyboom")
+v2=find_video_title("papyboom")
 #find_video_reco_first_ranks(v1["id_video"], u["id_user"], 1)
 #init_reco_video(v1["id_video"], v2["id_video"], u["id_user"], 0, 1)
 #note_video_recommendation(v1["id_video"], v2["id_video"],u["id_user"], 0, 3)
-#find_noted_videos(u["id_user"],0,10)
+find_noted_videos(u["id_user"],0,10)
+find_noted_videos2(v1["id_video"], 0, 10)

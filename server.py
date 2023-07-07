@@ -162,6 +162,17 @@ def find_noted_videos(id_user, page, number):
 		request.append({"id_video_ref":note[0].id_video, "title_ref":note[0].Title, "path_ref":note[0].Path,"id_video_reco":note[1].id_video, "title_reco":note[1].Title, "path_reco":note[1].Path, "rank":note[2], "note":note[3]})
 	return JSONResponse(status_code=200, content=request)
 
+@app.get("/note_video_ref/")
+def find_noted_videos2(id_video_ref, page, number):
+	videoDAO=class_video_DAO.Video_DAO()
+	notes=videoDAO.find_noted_videos(int(id_video_ref), int(page), int(number))
+	request=[]
+	for note in notes :
+		request.append({"id_video_ref":note[0].id_video, "title_ref":note[0].Title, "path_ref":note[0].Path,"id_video_reco":note[1].id_video, "title_reco":note[1].Title, "path_reco":note[1].Path, "rank":note[2], "note":note[3]})
+	return JSONResponse(status_code=200, content=request)
+
+
+
 @app.patch("/emotion_rank/")
 def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):
 	userDAO=class_user_DAO.User_DAO()
