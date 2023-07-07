@@ -104,6 +104,13 @@ def find_video_reco_first_ranks(id_video_ref,id_user, seuil):
     data = response.json()
     print(data)
     return data
+def find_video_reco_from_rank(id_video_ref, id_user, rank):
+    response = client.get("/emotion_rank_one?id_video_ref="+str(id_video_ref)+"&id_user="+str(id_user)+"&rank="+str(rank))
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    return data
+
 
 #create_user("lilou", 28, "femme")
 #create_video("babyboom", "moi")
@@ -111,7 +118,7 @@ def find_video_reco_first_ranks(id_video_ref,id_user, seuil):
 u=get_user("lilou")
 v1=find_video_title("babyboom")
 v2=find_video_title("papyboom")
-find_video_reco_first_ranks(v1["id_video"], u["id_user"], 10)
+find_video_reco_first_ranks(v1["id_video"], u["id_user"], 0)
 #init_reco_video(int(v1["id_video"]), v2["id_video"], u["id_user"], 1, 0)
 
 
