@@ -53,8 +53,6 @@ def create_video(video :  Video, status_code=201):
 	videoDAO=class_video_DAO.Video_DAO()
 	video_exist=videoDAO.find_video_from_title(video.title)
 	path_exist=videoDAO.find_video_from_path(video.path)
-	if path_exist!=None :
-		return JSONResponse(status_code=status.HTTP_201_CREATED, content={"title": video.title, "path": video.path})
 	if video_exist==None :
 		videoDAO.add_Video(video.title, video.path)
 		return JSONResponse(status_code=status.HTTP_201_CREATED, content={"title": video.title, "path": video.path})
