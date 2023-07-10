@@ -15,8 +15,9 @@ def login():
     	button_error_ok= Button(error_box_login, text="Ok", command = resolve_error) 
     	button_error_ok.pack()
     if response.status_code==200:
-    	view_list_videos.display_all_videos(response.json())  
     	main_view.destroy()
+    	view_list_videos.display_all_videos(response.json())  
+    	
 
 def resolve_error():
 	global error_box_login
@@ -48,8 +49,9 @@ def create_user():
 		button_error_ok= Button(error_box_login, text="Ok", command = resolve_error) 
 		button_error_ok.pack()
 	if response.status_code==201:
-		view_list_videos.display_all_videos(response.json())  
 		main_view.destroy()
+		view_list_videos.display_all_videos(response.json())  
+		
 
 title = Label ( main_view, text="Bienvenue dans Emolis App, veuillez vous connecter ou créer un compte" )
 title.pack()
@@ -91,4 +93,3 @@ main_view.mainloop()
 
 
 
-main_view.mainloop()
