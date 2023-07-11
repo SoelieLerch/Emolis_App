@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 from server import app
 from class_DAO import class_emotion_DAO, class_transcript_DAO, class_video_DAO,class_user_DAO
-
 client=TestClient(app)
 
 def create_user(login, age, genre, physio_bool):
@@ -42,7 +41,8 @@ def find_video_title(name):
     data = response.json()
     print(data)
     return data  
-    
+
+
 
 def create_emotion(name):
     response = client.put(
@@ -125,4 +125,8 @@ def find_noted_videos2(id_video_ref, page, number):
     data = response.json()
     print(data)
     return data
+
+def download_picture(name):
+    response = client.get("/picture?name="+name)
+    return response
 

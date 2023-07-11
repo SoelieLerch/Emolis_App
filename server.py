@@ -4,7 +4,9 @@ from class_metiers  import class_user
 from class_DAO import class_user_DAO, class_video_DAO, class_emotion_DAO, class_transcript_DAO
 from pydantic import BaseModel
 import uvicorn
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+
+
 
 
 class Videos_recommendation_user(BaseModel):
@@ -36,6 +38,8 @@ class Emotion(BaseModel):
 	name: str
 
 app = FastAPI()
+
+
 
 @app.put("/user/")
 def create_user(user :  User, status_code=201):
@@ -108,11 +112,14 @@ def find_video_from_id(id_video):
 	return {"id_video":video.id_video, "Title":video.title, "Path":video.path}
 
 
+
 @app.get("/video/")
 def find_video_from_title(name):
 	videoDAO=class_video_DAO.Video_DAO()
 	video=videoDAO.find_video_from_title(name)
 	return {"id_video":video.id_video, "Title":video.title, "Path":video.path}
+
+
 
 
 @app.get("/transcript")
@@ -169,7 +176,9 @@ def find_noted_videos2(id_video_ref, page, number):
 		request.append({"id_video_ref":note[0].id_video, "title_ref":note[0].Title, "path_ref":note[0].Path,"id_video_reco":note[1].id_video, "title_reco":note[1].Title, "path_reco":note[1].Path, "rank":note[2], "note":note[3]})
 	return JSONResponse(status_code=200, content=request)
 
-
+@app.get("/picture/")
+def download_picture(name):
+    return FileResponse(path=name,media_type="image/png")
 
 @app.patch("/emotion_rank/")
 def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):

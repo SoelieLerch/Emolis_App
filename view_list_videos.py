@@ -3,7 +3,7 @@ from tkinter import *
 from functools import partial
 from PIL import Image,ImageTk
 import view_play_video
-
+import os
 second_view=0
 def play(video):
 	global second_view
@@ -22,11 +22,19 @@ def display_all_videos(user):
 	labels_title=[]
 	images=[]
 	while(i<len(response)):
-		image = Image.open("pictures/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
+		response_picture=controller_login.download_picture("pictures/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
+		print("response pictures")
+		image=Image.open(response_picture)
+		image.save("temp_directory/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
+		isExist = os.path.exists("temp_directory")
+		if not isExist:
+			# Create a new directory because it does not exist
+			os.makedirs("temp_directory")
+		image = Image.open("temp_directory/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
 		image = image.resize((125,100))
 		#Convert the image to PhotoImage
-		image = image.save("pictures/"+response[i]["Path"].split("/")[-1].split(".")[0]+".png")
-		img= ImageTk.PhotoImage(master=second_view,file="pictures/"+response[i]["Path"].split("/")[-1].split(".")[0]+".png")
+		image = image.save("temp_directory/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
+		img= ImageTk.PhotoImage(master=second_view,file="temp_directory/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
 		images.append(img)
 		buttons.append(Button(second_view, image=images[i],command=partial(play, response[i])))
 		buttons[i].pack()
