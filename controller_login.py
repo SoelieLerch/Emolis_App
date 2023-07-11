@@ -38,3 +38,7 @@ def find_all_videos(number, page):
 def download_picture(name):
 	response=modele_client.download_picture(name)
 	return response
+
+def download_movie(name):
+	response=modele_client.download_movie(name)
+	return response

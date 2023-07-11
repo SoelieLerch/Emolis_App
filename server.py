@@ -180,6 +180,10 @@ def find_noted_videos2(id_video_ref, page, number):
 def download_picture(name):
     return FileResponse(path=name,media_type="image/png")
 
+@app.get("/movie/")
+def download_movie(name):
+    return FileResponse(path=name,media_type="video/mp4")
+
 @app.patch("/emotion_rank/")
 def note_video_recommendation(videos_recommendation_user:Videos_recommendation_user):
 	userDAO=class_user_DAO.User_DAO()

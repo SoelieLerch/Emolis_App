@@ -130,3 +130,7 @@ def download_picture(name):
     response = client.get("/picture?name="+name)
     return response
 
+def download_movie(name):
+    response = client.get("/movie?name="+name)
+    return response
+
