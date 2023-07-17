@@ -29,6 +29,14 @@ def update_duration(event):
     progress_slider["to"] = duration
 def update_scale(event):
     """ updates the scale value """
+    durate=videoplayer.current_duration()
+    i=0
+    while(i<len(begin)):
+    	if durate>=begin[i]and durate<=end[i]:
+    		print(emotions[i])
+    		canvas2.itemconfig(emotion_text, text=emotions[i])
+    		break
+    	i=i+1
     print(videoplayer.current_duration())
     duration.set(videoplayer.current_duration())
 def video_ended(event):
@@ -43,7 +51,11 @@ def seek(value):
 
 
 def start(canvas, file, title, id_video):
-	global tk2, duration, videoplayer, end_time, progress_slider
+	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, emotion_text, canvas2
+	canvas2 = Canvas(third_view, width=800, height=50)
+	rectangle_emotion=canvas2.create_rectangle(0,0, 800, 50)
+	emotion_text=canvas2.create_text(400, 25, text="")
+	canvas2.pack()
 	if not file.split(".")[0]+ ".mp3" in os.listdir("temp_directory"):
 		get_audio(file)
 	pygame.init()
@@ -67,7 +79,7 @@ def start(canvas, file, title, id_video):
 	videoplayer.bind("<<Duration>>", update_duration)
 	videoplayer.bind("<<SecondChanged>>", update_scale)
 	videoplayer.bind("<<Ended>>", video_ended )
-	canvas2 = Canvas(third_view, width=800, height=50)
+	
 	transcripts_text=[]
 	begin=[]
 	end=[]
@@ -103,7 +115,7 @@ def start(canvas, file, title, id_video):
 		k=0
 		em=[]
 		while(k<len(response2)):
-			em.append(response2[k]["name"][0])
+			em.append(response2[k]["name"])
 			k=k+1
 		emotions.append(em)
 		j=j+1
@@ -125,12 +137,6 @@ def start(canvas, file, title, id_video):
 			del emotions[j]
 		j=j+1
 	time_end=end[-1]
-	i=0
-	while(i<len(begin)):
-		canvas2.create_rectangle(begin[i]*800/time_end,0,end[i]*800/time_end,50)
-		canvas2.create_text(begin[i]*800/time_end+20, 25, text=' '.join(emotions[i]))
-		i=i+1
-	canvas2.pack()
 
 	
 	third_view.mainloop()
