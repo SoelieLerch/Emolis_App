@@ -10,11 +10,15 @@ import sys
 import pygame
 import time
 import signal
+import view_recommendation_video
 duration=0
 tk2=0
 def ok():
 	global tk2
 	tk2.destroy()
+
+def recommendation():
+	view_recommendation_video.recommendation_video(title_video)
 
 def get_audio (file) :
 	filename, ext = os.path.splitext(file)
@@ -58,7 +62,6 @@ def update_scale(event):
 def video_ended(event):
     """ handle video ended """
     progress_slider.set(progress_slider["to"])
-    play_pause_btn["text"] = "Play"
     progress_slider.set(0)
 def seek(value):
     """ used to seek a specific timeframe """
@@ -67,7 +70,8 @@ def seek(value):
 
 
 def start(canvas, file, title, id_video):
-	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, canvas2, rectangles_joie, rectangles_colere, rectangles_surprise, rectangles_neutre, rectangles_degout, rectangles_tristesse, rectangles_peur, emotion_text
+	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, canvas2, rectangles_joie, rectangles_colere, rectangles_surprise, rectangles_neutre, rectangles_degout, rectangles_tristesse, rectangles_peur, emotion_text, title_video
+	title_video=title
 	canvas2 = Canvas(third_view, width=800, height=350)
 	if not file.split(".")[0]+ ".mp3" in os.listdir("temp_directory"):
 		get_audio(file)
@@ -87,6 +91,8 @@ def start(canvas, file, title, id_video):
 	progress_slider.pack()
 	end_time = Label(canvas, text=str(datetime.timedelta(seconds=0)))
 	end_time.pack(side="left")
+	button_reco=Button(canvas, text="Recommandation",command=recommendation)
+	button_reco.pack()
 	videoplayer.bind("<<Duration>>", update_duration)
 	videoplayer.bind("<<SecondChanged>>", update_scale)
 	videoplayer.bind("<<Ended>>", video_ended )
