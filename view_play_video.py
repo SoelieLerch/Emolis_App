@@ -10,7 +10,7 @@ import sys
 import pygame
 import time
 import signal
-
+duration=0
 tk2=0
 def ok():
 	global tk2
@@ -22,10 +22,28 @@ def get_audio (file) :
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT)
 
+def update_duration(event):
+    """ updates the duration after finding the duration """
+    duration = videoplayer.video_info()["duration"]
+    end_time["text"] = str(datetime.timedelta(seconds=duration))
+    progress_slider["to"] = duration
+def update_scale(event):
+    """ updates the scale value """
+    print(videoplayer.current_duration())
+    duration.set(videoplayer.current_duration())
+def video_ended(event):
+    """ handle video ended """
+    progress_slider.set(progress_slider["to"])
+    play_pause_btn["text"] = "Play"
+    progress_slider.set(0)
+def seek(value):
+    """ used to seek a specific timeframe """
+    videoplayer.seek(int(value))
+
 
 
 def start(canvas, file, title, id_video):
-	global tk2
+	global tk2, duration, videoplayer, end_time, progress_slider
 	if not file.split(".")[0]+ ".mp3" in os.listdir("temp_directory"):
 		get_audio(file)
 	pygame.init()
@@ -41,6 +59,14 @@ def start(canvas, file, title, id_video):
 	time_begin=time.time()
 	videoplayer.play() # play the video
 	pygame.mixer.music.play()
+	duration=IntVar(canvas)
+	progress_slider = Scale(canvas, variable=duration, from_=0, to=0, orient="horizontal", command=seek)
+	progress_slider.pack()
+	end_time = Label(canvas, text=str(datetime.timedelta(seconds=0)))
+	end_time.pack(side="left")
+	videoplayer.bind("<<Duration>>", update_duration)
+	videoplayer.bind("<<SecondChanged>>", update_scale)
+	videoplayer.bind("<<Ended>>", video_ended )
 	canvas2 = Canvas(third_view, width=800, height=50)
 	transcripts_text=[]
 	begin=[]
