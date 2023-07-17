@@ -32,12 +32,28 @@ def update_scale(event):
     durate=videoplayer.current_duration()
     i=0
     while(i<len(begin)):
-    	if durate>=begin[i]and durate<=end[i]:
+    	if begin[i]<=durate and end[i]>=durate:
     		print(emotions[i])
     		canvas2.itemconfig(emotion_text, text=emotions[i])
+    		j=0
+    		while(j<len(emotions[i])):
+    			if emotions[i][j]=="Colère":
+    				canvas2.itemconfig(rectangles_colere[i], fill='red')
+    			if emotions[i][j]=="Joie":
+    				canvas2.itemconfig(rectangles_joie[i], fill='yellow')
+    			if emotions[i][j]=="Tristesse":
+    				canvas2.itemconfig(rectangles_tristesse[i], fill='blue')
+    			if emotions[i][j]=="Dégoût":
+    				canvas2.itemconfig(rectangles_degout[i], fill='green')
+    			if emotions[i][j]=="Peur":
+    				canvas2.itemconfig(rectangles_peur[i], fill='purple')
+    			if emotions[i][j]=="Surprise":
+    				canvas2.itemconfig(rectangles_surprise[i], fill='orange')
+    			if emotions[i][j]=="Neutre":
+    				canvas2.itemconfig(rectangles_neutre[i], fill='grey')
+    			j=j+1
     		break
     	i=i+1
-    print(videoplayer.current_duration())
     duration.set(videoplayer.current_duration())
 def video_ended(event):
     """ handle video ended """
@@ -51,11 +67,8 @@ def seek(value):
 
 
 def start(canvas, file, title, id_video):
-	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, emotion_text, canvas2
-	canvas2 = Canvas(third_view, width=800, height=50)
-	rectangle_emotion=canvas2.create_rectangle(0,0, 800, 50)
-	emotion_text=canvas2.create_text(400, 25, text="")
-	canvas2.pack()
+	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, canvas2, rectangles_joie, rectangles_colere, rectangles_surprise, rectangles_neutre, rectangles_degout, rectangles_tristesse, rectangles_peur, emotion_text
+	canvas2 = Canvas(third_view, width=800, height=350)
 	if not file.split(".")[0]+ ".mp3" in os.listdir("temp_directory"):
 		get_audio(file)
 	pygame.init()
@@ -69,8 +82,6 @@ def start(canvas, file, title, id_video):
 	videoplayer.bind("<<Loaded>>", lambda e: e.widget.config(width=800, height=500))
 	videoplayer.pack()
 	time_begin=time.time()
-	videoplayer.play() # play the video
-	pygame.mixer.music.play()
 	duration=IntVar(canvas)
 	progress_slider = Scale(canvas, variable=duration, from_=0, to=0, orient="horizontal", command=seek)
 	progress_slider.pack()
@@ -136,9 +147,53 @@ def start(canvas, file, title, id_video):
 			emotions[j-1]=list(dict.fromkeys(emotions[j-1]))
 			del emotions[j]
 		j=j+1
+	emotion_text=canvas2.create_text(400, 10, text="")
 	time_end=end[-1]
-
-	
+	rectangles_joie=[]
+	i=0
+	while(i<len(end)):
+		rectangles_joie.append(canvas2.create_rectangle(begin[i]*800/time_end, 0,end[i]*800/time_end,50, outline=""))
+		i=i+1
+	canvas2.create_text(50, 25, text="Joie")
+	rectangles_colere=[]
+	i=0
+	while(i<len(end)):
+		rectangles_colere.append(canvas2.create_rectangle(begin[i]*800/time_end, 50,end[i]*800/time_end,100,outline="" ))
+		i=i+1
+	canvas2.create_text(50, 75, text="Colère")
+	rectangles_degout=[]
+	i=0
+	while(i<len(end)):
+		rectangles_degout.append(canvas2.create_rectangle(begin[i]*800/time_end, 100,end[i]*800/time_end,150, outline="" ))
+		i=i+1
+	canvas2.create_text(50, 125, text="Dégoût")
+	rectangles_peur=[]
+	i=0
+	while(i<len(end)):
+		rectangles_peur.append(canvas2.create_rectangle(begin[i]*800/time_end, 150,end[i]*800/time_end,200,outline="" ))
+		i=i+1
+	canvas2.create_text(50, 175, text="Peur")
+	rectangles_tristesse=[]
+	i=0
+	while(i<len(end)):
+		rectangles_tristesse.append(canvas2.create_rectangle(begin[i]*800/time_end, 200,end[i]*800/time_end,250,outline="" ))
+		i=i+1
+	canvas2.create_text(50, 225, text="Tristesse")
+	rectangles_surprise=[]
+	i=0
+	while(i<len(end)):
+		rectangles_surprise.append(canvas2.create_rectangle(begin[i]*800/time_end, 250,end[i]*800/time_end,300,outline="" ))
+		i=i+1
+	rectangles_neutre=[]
+	canvas2.create_text(50, 275, text="Surprise")
+	i=0
+	while(i<len(end)):
+		rectangles_neutre.append(canvas2.create_rectangle(begin[i]*800/time_end, 300,end[i]*800/time_end,350,outline="" ))
+		i=i+1
+	canvas2.create_text(50, 325, text="Neutre")
+	canvas2.pack()
+	videoplayer.play() # play the video
+	pygame.mixer.music.play()
 	third_view.mainloop()
 
 def play_video(video):
