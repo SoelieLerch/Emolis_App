@@ -42,3 +42,11 @@ def download_picture(name):
 def download_movie(name):
 	response=modele_client.download_movie(name)
 	return response
+
+def find_transcripts(id_video,number, page):
+	response=modele_client.get_transcripts(id_video, number, page)
+	return response
+
+def get_emotions(id_transcript):
+	response=modele_client.get_emotions_from_transcript(id_transcript)
+	return response

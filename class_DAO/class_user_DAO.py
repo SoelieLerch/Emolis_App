@@ -68,7 +68,7 @@ class User_DAO():
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
 		notes_reco=[]
-		stmt=select(videos_recommendation_user).where(videos_recommendation_user.id_user==id_user)
+		stmt=select(videos_recommendation_user).where(videos_recommendation_user.id_user==id_user and videos_recommendation_user.id_user>=page*number and videos_recommendation_user.id_user<=number*(page+1) and videos_recommendation_user.note!=-1)
 		for noted_video in session.scalars(stmt) :
 			video_ref=select(Video).where(Video.id_video==noted_video.id_video_ref)
 			video_reco=select(Video).where(Video.id_video==noted_video.id_video_reco)

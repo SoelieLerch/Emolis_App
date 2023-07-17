@@ -191,5 +191,6 @@ def note_video_recommendation(videos_recommendation_user:Videos_recommendation_u
 	return 	JSONResponse(status_code=200, content={"id_video_ref":videos_recommendation_user.id_video_ref, "id_video_reco":videos_recommendation_user.id_video_reco, "id_user":videos_recommendation_user.id_user, "note":videos_recommendation_user.note})
 
 
+
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)

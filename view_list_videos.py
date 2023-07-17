@@ -21,6 +21,9 @@ def display_all_videos(user):
 	buttons=[]
 	labels_title=[]
 	images=[]
+	dir = 'temp_directory'
+	for f in os.listdir(dir):
+		os.remove(os.path.join(dir, f))
 	while(i<len(response)):
 		response_picture=controller_login.download_picture("pictures/"+response[i]["Path"].split("/")[-1].split(".")[0]+".jpg")
 		print("response pictures")

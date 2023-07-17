@@ -57,8 +57,7 @@ class Transcript_DAO :
 					session.add(transcript_emotion)
 					session.commit()
 					i=i+1
-					
-
+	
 class Base(DeclarativeBase):
 	pass
 
