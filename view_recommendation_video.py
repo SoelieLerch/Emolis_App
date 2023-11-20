@@ -61,9 +61,5 @@ def recommendation_video(id_video, user):
 		i=i+1
 	Button_return=Button(forth_view, text="Retour aux vidéos de références", command=return_menu)
 	Button_return.grid(column=1, row=10)
-<<<<<<< HEAD
 	forth_view.mainloop()
-=======
-	forth_view.mainloop()
-	
->>>>>>> 71e1d0e3c830168cc0e775c7d2c7e4305238377d
+
