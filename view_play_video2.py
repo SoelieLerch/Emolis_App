@@ -9,17 +9,18 @@ import os
 import sys
 import pygame
 import time
-import signal
-import view_recommendation_video
+import view_notation
+
+
 duration=0
 tk2=0
 def ok():
 	global tk2
 	tk2.destroy()
 
-def recommendation():
+def notate():
 	third_view.destroy()
-	view_recommendation_video.recommendation_video(id_video_ref, user)
+	view_notation.notate(id_video_ref, video_reco, user, rank_video)
 
 
 def get_audio (file) :
@@ -74,9 +75,11 @@ def seek(value):
 
 
 
-def start(canvas, file, title, id_video, login):
-	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, canvas2, rectangles_joie, rectangles_colere, rectangles_surprise, rectangles_neutre, rectangles_degout, rectangles_tristesse, rectangles_peur, emotion_text, id_video_ref, user
-	id_video_ref=id_video
+def start(canvas, file, title, id_video, login, video_ref, rank):
+	global tk2, duration, videoplayer, end_time, progress_slider, end, begin, emotions, canvas2, rectangles_joie, rectangles_colere, rectangles_surprise, rectangles_neutre, rectangles_degout, rectangles_tristesse, rectangles_peur, emotion_text, id_video_ref, user, video_reco, rank_video
+	rank_video=rank
+	id_video_ref=video_ref
+	video_reco=id_video
 	user=login
 	canvas2 = Canvas(third_view, width=800, height=350)
 	if not file.split(".")[0]+ ".mp3" in os.listdir("temp_directory"):
@@ -97,7 +100,7 @@ def start(canvas, file, title, id_video, login):
 	progress_slider.pack()
 	end_time = Label(canvas, text=str(datetime.timedelta(seconds=0)))
 	end_time.pack(side="left")
-	button_reco=Button(canvas, text="Recommandation",command=recommendation)
+	button_reco=Button(canvas, text="Noter",command=notate)
 	button_reco.pack()
 	videoplayer.bind("<<Duration>>", update_duration)
 	videoplayer.bind("<<SecondChanged>>", update_scale)
@@ -194,7 +197,7 @@ def start(canvas, file, title, id_video, login):
 	pygame.mixer.music.play()
 	third_view.mainloop()
 
-def play_video(video, user):
+def play_video(video_ref, video, user, rank):
 	canvas=0
 	global third_view
 	third_view=Tk()
@@ -207,5 +210,5 @@ def play_video(video, user):
 	file.close()
 	print("response")
 	print(response.status_code)
-	start(canvas, "temp_directory/"+video["Path"].split("/")[-1], video["Title"], video["id_video"], user)
+	start(canvas, "temp_directory/"+video["Path"].split("/")[-1], video["Title"], video["id_video"], user, video_ref, rank)
 	third_view.mainloop()

@@ -56,7 +56,7 @@ class Video_DAO():
 	def find_transcripts(self,id_video, number, page):
 		engine = create_engine("sqlite+pysqlite:///emolis_database.sqlite", echo=True)
 		session = Session(engine)
-		stmt = select(Transcript).where(Transcript.id_video==id_video, Transcript.id_transcript>=number*page, Transcript.id_transcript<=number*(page+1))
+		stmt = select(Transcript).where(Transcript.id_video==id_video, Transcript.Num_dialogue>=number*page, Transcript.Num_dialogue<=number*(page+1))
 		transcripts=[]
 		for transcript in session.scalars(stmt):
 			transcript=class_transcript.Transcript(transcript.id_transcript,transcript.id_video, transcript.Num_dialogue, transcript.Text, transcript.begin_utterance, transcript.end_utterance)

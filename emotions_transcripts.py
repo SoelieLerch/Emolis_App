@@ -335,15 +335,17 @@ def objective(trial):
 	epoch = checkpoint['epoch']
 	loss = checkpoint['loss']
 	model.eval()
-	video_file="test_Frozen_scene2.csv"
+	video_file="test_zootopie_scene6.csv"
 	feats_audio, feats_text, y, bool_text,bool_audio,names=load_feats(video_file)
 	feats_audio_true, feats_text_true, y_true,names_true, feats_audio_false, feats_text_false, y_false, names_false=get_data_bool(feats_audio, feats_text,bool_audio, bool_text,y, names)
 	data=get_batches(feats_audio_true, feats_text_true, y_true,names_true,feats_audio_false, feats_text_false, y_false, names_false,params["batch_size"])
 	i=0
 	emo_scores=[]
 	names_scores=[]
+	labels_emotion_temp=[]
 	while(i<len(data)):
 		print(i)
+		labels_emotion_temp.append(data[i]["y"])
 		scores_data=model(torch.cat(data[i]["features_text"], axis=0), torch.cat(data[i]["features_audio"], axis=0), data[i]["Text"], data[i]["Audio"])
 		if data[i]["Text"]==False and data[i]["Audio"]==False:
 			scores_data=torch.FloatTensor(torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]), torch.FloatTensor([0,0,0,0,0,0]))
@@ -371,6 +373,7 @@ def objective(trial):
 	i=0
 	emo_scores_total=[]
 	emo_names_total=[]
+	labels_emotion=[]
 	while(i<len(names_scores)*params["batch_size"]):
 		j=0
 		while(j<len(emo_scores)):
@@ -379,14 +382,10 @@ def objective(trial):
 				if names_scores[j][k].split("_")[-1]==str(i):
 					emo_scores_total.append(emo_scores[j][k])
 					emo_names_total.append(names_scores[j][k])
+					labels_emotion.append(labels_emotion_temp[j][k])
 					break
 				k=k+1
 			j=j+1
-		try :
-			print(emo_names_total[i])
-			print(emo_scores_total[i])
-		except:
-			pass
 		i=i+1
 	i=0
 	while(i<len(emo_names_total)):
@@ -406,28 +405,48 @@ def objective(trial):
 		if em==[]:
 			em.append("Neutre")
 		emo_scores_total[i]=em
-		print(emo_names_total[i])
+		em=[]
+		if labels_emotion[i][0]==1:
+			em.append("Colère")
+		if labels_emotion[i][1]==1:
+			em.append("Joie")
+		if labels_emotion[i][2]==1:
+			em.append("Tristesse")
+		if labels_emotion[i][3]==1:
+			em.append("Dégoût")
+		if labels_emotion[i][4]==1:
+			em.append("Peur")
+		if labels_emotion[i][5]==1:
+			em.append("Surprise")
+		if em==[]:
+			em.append("Neutre")
+		labels_emotion[i]=em
 		print(emo_scores_total[i])
+		print(labels_emotion[i])
 		i=i+1
-	#modele_client.create_emotion("Colère")
-	#modele_client.create_emotion("Joie")
-	#modele_client.create_emotion("Tristesse")
-	#modele_client.create_emotion("Dégoût")
-	#modele_client.create_emotion("Peur")
-	#modele_client.create_emotion("Surprise")
-	#modele_client.create_emotion("Neutre")
-	modele_client.create_video("La reine des neiges - Préparation Couronnement","video/La_reine_des_neiges_2.mp4")
+	"""
+	modele_client.create_emotion("Colère")
+	modele_client.create_emotion("Joie")
+	modele_client.create_emotion("Tristesse")
+	modele_client.create_emotion("Dégoût")
+	modele_client.create_emotion("Peur")
+	modele_client.create_emotion("Surprise")
+	modele_client.create_emotion("Neutre")
+	"""
+	title="Zootopie - Retour à l'état sauvage !"
+	modele_client.create_video(title,"video/Zootopie_6.mp4")
 	dialogues=pd.read_csv("transcription/emolis/"+video_file)
 	i=0
 	while(i<len(emo_scores_total)):
 		begin=int(dialogues["StartTime"][i].split(":")[0])*3600+int(dialogues["StartTime"][i].split(":")[1])*60+int(dialogues["StartTime"][i].split(":")[2].split(",")[0])
 		end=int(dialogues["EndTime"][i].split(":")[0])*3600+int(dialogues["EndTime"][i].split(":")[1])*60+int(dialogues["EndTime"][i].split(":")[2].split(",")[0])
-		modele_client.create_transcript("La reine des neiges - Préparation Couronnement", str(i),dialogues["Utterance"][i],begin,end, emo_scores_total[i])
+		modele_client.create_transcript(title, str(i),dialogues["Utterance"][i],begin,end, emo_scores_total[i], labels_emotion[i])
 		if begin>end :
 			print("error")
 			print(begin)
 			print(end)
 		i=i+1
+	return 0
 
 study = optuna.create_study()
 study.optimize(objective, n_trials=1)

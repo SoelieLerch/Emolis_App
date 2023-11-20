@@ -50,3 +50,15 @@ def find_transcripts(id_video,number, page):
 def get_emotions(id_transcript):
 	response=modele_client.get_emotions_from_transcript(id_transcript)
 	return response
+
+def get_labels(id_transcript):
+	response=modele_client.get_labels_from_transcript(id_transcript)
+	return response
+
+def get_first_ranks(id_video, id_user, seuil):
+	response=modele_client.find_video_reco_first_ranks(id_video, id_user, seuil)
+	return response
+
+def note(note, id_user, id_video_ref, id_video_reco, rank):
+	response=modele_client.note_video_recommendation(id_video_ref,id_video_reco, id_user,rank, note)
+	return response

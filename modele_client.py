@@ -65,10 +65,10 @@ def create_emotion(name):
     assert response.status_code == 201, response.text
     data = response.json()
     print(data)
-def create_transcript(title, num_dialogue, text,begin_utterance, end_utterance, emotions):    
+def create_transcript(title, num_dialogue, text,begin_utterance, end_utterance, emotions, labels):    
     response = client.put(
         "/transcript/",
-        json={"title":title, "num_dialogue":num_dialogue, "text":text,"begin_utterance":begin_utterance, "end_utterance":end_utterance, "emotions":emotions},
+        json={"title":title, "num_dialogue":num_dialogue, "text":text,"begin_utterance":begin_utterance, "end_utterance":end_utterance, "emotions":emotions, "labels":labels},
     )
     return response
 
@@ -80,6 +80,11 @@ def get_transcripts(id_video, number, page):
 def get_emotions_from_transcript(id_transcript):
     response = client.get(
         "/emotions?id_transcript="+str(id_transcript))
+    return response
+
+def get_labels_from_transcript(id_transcript):
+    response = client.get(
+        "/labels?id_transcript="+str(id_transcript))
     return response
 
 def init_reco_video(id_video_ref, id_video_reco, id_user, rank, note):
@@ -97,10 +102,7 @@ def init_reco_video(id_video_ref, id_video_reco, id_user, rank, note):
 
 def find_video_reco_first_ranks(id_video_ref,id_user, seuil):
     response = client.get("/emotion_rank?id_video_ref="+str(id_video_ref)+"&id_user="+str(id_user)+"&seuil="+str(seuil))
-    assert response.status_code == 200, response.text
-    data = response.json()
-    print(data)
-    return data
+    return response
 def find_video_reco_from_rank(id_video_ref, id_user, rank):
     response = client.get("/emotion_rank_one?id_video_ref="+str(id_video_ref)+"&id_user="+str(id_user)+"&rank="+str(rank))
     assert response.status_code == 200, response.text

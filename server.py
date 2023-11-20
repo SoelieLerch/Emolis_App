@@ -29,6 +29,7 @@ class Transcript(BaseModel):
 	begin_utterance : int
 	end_utterance :int
 	emotions : list
+	labels:list
 
 class Video(BaseModel):
 	title: str
@@ -47,7 +48,7 @@ def create_user(user :  User, status_code=201):
 	user_exist=userDAO.find_user_from_name(user.login)
 	if user_exist==None :
 		userDAO.add_user(user.login, user.age, user.genre, user.physio_bool)
-		return JSONResponse(status_code=status.HTTP_201_CREATED, content={"login": user.login, "age": user.age, "genre":user.genre})
+		return JSONResponse(status_code=status.HTTP_201_CREATED, content={"login": user.login, "age": user.age, "genre":user.genre, "physio":user.physio_bool})
 	else :
 		raise HTTPException(status_code=405, detail="Error 405 : Login already exist")
 
@@ -76,7 +77,7 @@ def create_transcript(transcript:Transcript, status_code=201):
 	video_DAO=class_video_DAO.Video_DAO()
 	video=video_DAO.find_video_from_title(transcript.title)
 	transcript_DAO.add_Transcript_from_video(video.id_video, transcript.num_dialogue, transcript.text, transcript.begin_utterance, transcript.end_utterance)
-	transcript_DAO.add_emotions_to_transcript(video.id_video, transcript.num_dialogue, transcript.emotions)
+	transcript_DAO.add_emotions_to_transcript(video.id_video, transcript.num_dialogue, transcript.emotions, transcript.labels)
 	return JSONResponse(status_code=status.HTTP_201_CREATED, content={"title":transcript.title, "num_dialogue":transcript.num_dialogue, "text":transcript.text,"begin_utterance":transcript.begin_utterance, "end_utterance":transcript.end_utterance})
 
 @app.put("/emotion_rank/")
@@ -91,7 +92,7 @@ def get_user(login :str):
 	userDAO=class_user_DAO.User_DAO()
 	user=userDAO.find_user_from_name(login)
 	if user!=None:
-		return {"id_user":user.id_user,"login": user.login, "age": user.age, "genre":user.genre}
+		return {"id_user":user.id_user,"login": user.login, "age": user.age, "genre":user.genre, "physio":user.physio_bool}
 	else :
 		raise HTTPException(status_code=404, detail="Error 404 : Login not found")
 
@@ -139,6 +140,16 @@ def get_emotions_from_transcript(id_transcript):
 	for emotion in emotions :
 		request.append({"id_emotion":emotion.id_emotion, "name":emotion.name})
 	return JSONResponse(status_code=200, content=request)		
+
+@app.get("/labels/")
+def get_labels_from_transcript(id_transcript):
+	transcriptDAO=class_transcript_DAO.Transcript_DAO()
+	emotions=transcriptDAO.get_labels_from_transcript(int(id_transcript))
+	request=[]
+	for emotion in emotions :
+		request.append({"id_emotion":emotion.id_emotion, "name":emotion.name})
+	return JSONResponse(status_code=200, content=request)		
+
 
 @app.get("/emotion_rank/")
 def find_video_reco_first_ranks(id_video_ref, id_user, seuil):
