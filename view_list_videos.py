@@ -3,7 +3,7 @@ from tkinter import *
 from functools import partial
 from PIL import Image,ImageTk
 import tkinter.ttk as ttk
-import view_play_video3
+import view_play_video
 import os
 second_view=0
 button_last=0
@@ -81,7 +81,7 @@ def next(cpt2):
 def play(video):
 	global second_view
 	second_view.destroy()
-	view_play_video3.play_video(video, user_identity)
+	view_play_video.play_video(video, user_identity)
 
 def display_all_videos(user):
 	global second_view, user_identity, buttons, cpt, button_last, button_next, labels_title
