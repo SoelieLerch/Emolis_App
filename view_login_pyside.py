@@ -2,6 +2,7 @@ from tkinter import *
 import controller_login
 from tkinter.ttk import *
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QComboBox, QCheckBox
+import view_list_videos_pyside
 class Error_box(QMainWindow):
     def __init__(self, text):
         super().__init__()
@@ -58,7 +59,11 @@ class MyWindow(QMainWindow):
     		error_box=Error_box("Erreur Login n'existe pas")
     		error_box.show()
     	elif response.status_code==200:
-    		self.close()
+            self.close()
+            global view_list_videos
+            view_list_videos=view_list_videos_pyside.View_list_videos(response.json())
+            view_list_videos.show()
+            print("ok")
     		
     def create_user(self):
         global error_box
@@ -70,6 +75,9 @@ class MyWindow(QMainWindow):
                 error_box.show()
             elif response.status_code==201:
                 self.close()
+                global view_list_videos
+                view_list_videos=view_list_videos_pyside.View_list_videos(response.json())
+                view_list_videos.show()
         except:
             error_box=Error_box("Ecrire un age valide (nombre)")
             error_box.show()
