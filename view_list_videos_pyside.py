@@ -1,19 +1,23 @@
-from PySide6.QtWidgets import QApplication, QMainWindow,QLabel, QPushButton, QToolButton
+from PySide6.QtWidgets import QApplication, QMainWindow,QLabel, QPushButton, QToolButton, QWidget, QVBoxLayout, QGraphicsView, QGraphicsScene,QGraphicsRectItem,QGraphicsTextItem
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtGui import QFont, QColor
+from PySide6.QtGui import QFont, QColor, QPen
 from PySide6.QtCore import Qt
+import PySide6.QtWidgets as QtWidgets
 from functools import partial
 global cpt, bool_before, bool_next, button_next, button_before
 import os
+import vlc
 import controller_login
+import threading
 cpt=0
 bool_before=False
 bool_next=True
 button_next=0
 button_before=0
 from PIL import Image
+import view_play_video_pyside
 class View_list_videos(QMainWindow):
-    def __init__(self, user, cpt2):
+    def __init__(self,user,cpt2):
         super().__init__()
         cpt=cpt2
         # Set window properties
@@ -33,12 +37,11 @@ class View_list_videos(QMainWindow):
         images=[]
         dir = 'temp_directory'
         if os.path.exists(dir)==False:
-        	os.makedirs(dir)
+            os.makedirs(dir)
         for f in os.listdir(dir):
-        	os.remove(os.path.join(dir, f))
+            os.remove(os.path.join(dir, f))
         column=0
         row=0
-
         while(i<len(response)):
             if i%4==0 and i>3:
                 column=column+1
@@ -65,12 +68,11 @@ class View_list_videos(QMainWindow):
             self.buttons[i].setIcon(pixmap)
             self.buttons[i].setIconSize(pixmap.size())
             # Connect a slot to the button click event
-            self.buttons[i].clicked.connect(self.play)
+            self.buttons[i].clicked.connect(partial(self.play, response[i]))
             self.labels_title.append(QLabel(response[i]["Title"], self))
             self.labels_title[i].setGeometry(200*row+40, column*150+130, 400, 30)
             row=row+2
             i=i+1
-
         if response[0]["id_video"]!=1:
             self.button_next= QToolButton(self)
             self.button_next.setGeometry(6*240-100,column*150+170,50,50)  # (x, y, width, height)
@@ -92,6 +94,11 @@ class View_list_videos(QMainWindow):
             self.button_before.setArrowType(Qt.RightArrow)
             self.button_before.clicked.connect(partial(self.next, cpt+1))
 
+    def play(self,file):
+        self.window3 =view_play_video_pyside.View_play_video(file, user_indentity)
+        self.window3.show()
+        self.close()
+
     def next(self, cpt2):
         self.close()
         window=View_list_videos(user_indentity, cpt2)
@@ -102,6 +109,3 @@ class View_list_videos(QMainWindow):
         window=View_list_videos(user_indentity, cpt2)
         window.show()
         print("before", cpt2)
-
-    def play(self):
-    	print("play")
