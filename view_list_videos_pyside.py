@@ -1,22 +1,32 @@
-from PySide6.QtWidgets import QApplication, QMainWindow,QLabel, QPushButton
-from PySide6.QtGui import QPixmap
-global cpt
+from PySide6.QtWidgets import QApplication, QMainWindow,QLabel, QPushButton, QToolButton
+from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtGui import QFont, QColor
+from PySide6.QtCore import Qt
+from functools import partial
+global cpt, bool_before, bool_next, button_next, button_before
 import os
 import controller_login
 cpt=0
+bool_before=False
+bool_next=True
+button_next=0
+button_before=0
 from PIL import Image
 class View_list_videos(QMainWindow):
-    def __init__(self, user):
+    def __init__(self, user, cpt2):
         super().__init__()
-
+        cpt=cpt2
         # Set window properties
         self.setWindowTitle("New Window")
         self.setGeometry(0, 0, 1500, 1000)  # (x, y, width, height)
+        global user_indentity
         user_indentity=user
         self.title_view = QLabel("Choisissez une vidéo pour voir les émotions en temps réel", self)
         self.title_view.setGeometry(10, 0, 500, 30)
         response=controller_login.find_all_videos(20,cpt)
         response=response.json()
+        if  len(response)>20:
+            del response[-1]
         i=0
         self.buttons=[]
         self.labels_title=[]
@@ -28,6 +38,7 @@ class View_list_videos(QMainWindow):
         	os.remove(os.path.join(dir, f))
         column=0
         row=0
+
         while(i<len(response)):
             if i%4==0 and i>3:
                 column=column+1
@@ -60,6 +71,37 @@ class View_list_videos(QMainWindow):
             row=row+2
             i=i+1
 
+        if response[0]["id_video"]!=1:
+            self.button_next= QToolButton(self)
+            self.button_next.setGeometry(6*240-100,column*150+170,50,50)  # (x, y, width, height)
+            self.button_next.setObjectName('Right.TButton')
+            self.button_next.setFont(QFont('', 50, QFont.Bold))
+            self.button_next.setProperty('width', 1)
+            self.button_next.setProperty('arrowcolor', QColor('blue'))
+            self.button_next.setArrowType(Qt.LeftArrow)
+            self.button_next.clicked.connect(partial(self.before, cpt-1))
+        response2=controller_login.find_all_videos(20,cpt+1)
+        response2=response2.json()
+        if response2!=[]:
+            self.button_before= QToolButton(self)
+            self.button_before.setGeometry(6*240,column*150+170,50,50)  # (x, y, width, height)
+            self.button_before.setObjectName('Right.TButton')
+            self.button_before.setFont(QFont('', 50, QFont.Bold))
+            self.button_before.setProperty('width', 1)
+            self.button_before.setProperty('arrowcolor', QColor('blue'))
+            self.button_before.setArrowType(Qt.RightArrow)
+            self.button_before.clicked.connect(partial(self.next, cpt+1))
+
+    def next(self, cpt2):
+        self.close()
+        window=View_list_videos(user_indentity, cpt2)
+        window.show()
+        print("next", cpt2)
+    def before(self, cpt2):
+        self.close()
+        window=View_list_videos(user_indentity, cpt2)
+        window.show()
+        print("before", cpt2)
 
     def play(self):
     	print("play")
