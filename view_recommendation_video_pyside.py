@@ -13,6 +13,7 @@ import controller_login
 import threading
 import view_recommendation_video_pyside
 from PIL import Image
+import view_list_videos_pyside
 
 class View_Recommendation_video(QMainWindow):
     def __init__(self,id_video, user):
@@ -72,6 +73,8 @@ class View_Recommendation_video(QMainWindow):
         # Connect button click signal to the login slot
         self.button_return.clicked.connect(self.return_menu)
     def return_menu(self):
-    	pass
+    	window=view_list_videos_pyside.View_list_videos(user_identity,0)
+    	window.show()
+    	self.close()
     def play(self, video):
     	pass
