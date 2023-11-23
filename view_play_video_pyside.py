@@ -6,9 +6,11 @@ import PySide6.QtWidgets as QtWidgets
 from functools import partial
 global cpt, bool_before, bool_next, button_next, button_before
 import os
+import view_recommendation_video_pyside
 import vlc
 import controller_login
 import threading
+import view_recommendation_video_pyside
 cpt=0
 bool_before=False
 bool_next=True
@@ -277,5 +279,6 @@ def recommendation():
     player.release()
     window.close()
     #destruction du player
-    view_recommendation_video_pyside.View_Recommendation_video(id_video_ref, user)
+    view_recommendation=view_recommendation_video_pyside.View_Recommendation_video(id_video_ref, login)
+    view_recommendation.show()
 
