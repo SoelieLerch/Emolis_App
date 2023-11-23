@@ -13,7 +13,7 @@ import controller_login
 import threading
 import view_recommendation_video_pyside
 from PIL import Image
-import view_list_videos_pyside
+import view_list_videos_pyside, view_play_video_pyside2
 
 class View_Recommendation_video(QMainWindow):
     def __init__(self,id_video, user):
@@ -77,4 +77,5 @@ class View_Recommendation_video(QMainWindow):
     	window.show()
     	self.close()
     def play(self, video):
-    	pass
+    	view_play=view_play_video_pyside2.View_play_video(video, user_identity)
+    	view_play.show()
