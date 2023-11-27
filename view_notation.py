@@ -1,89 +1,103 @@
 import controller_login
-from tkinter import *
 from functools import partial
-from PIL import Image,ImageTk
-import tkinter.ttk as ttk
-import view_play_video2
 import os
 global cpt
 import view_recommendation_video
+from PySide6.QtWidgets import QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QGraphicsWidget, QGraphicsProxyWidget, QLabel,QGraphicsEllipseItem, QGraphicsPolygonItem,QGraphicsTextItem, QPushButton
+from PySide6.QtGui import QColor, QPolygonF
+from PySide6.QtCore import Qt, QPointF
+import view_recommendation_video
 cpt=-1
-def clicked1(event):
-	global cpt
-	canvas.itemconfig(star1, fill='yellow')
-	canvas2.itemconfig(star2, fill='white')
-	canvas3.itemconfig(star3, fill='white')
-	canvas4.itemconfig(star4, fill='white')
-	cpt=0
-	print(cpt)
-
-def clicked2(event):
-	global cpt
-	canvas.itemconfig(star1, fill='yellow')
-	canvas2.itemconfig(star2, fill='yellow')
-	canvas3.itemconfig(star3, fill='white')
-	canvas4.itemconfig(star4, fill='white')
-	cpt=1
-	print(cpt)
-
-def clicked3(event):
-	global cpt
-	canvas.itemconfig(star1, fill='yellow')
-	canvas2.itemconfig(star2, fill='yellow')
-	canvas3.itemconfig(star3, fill='yellow')
-	canvas4.itemconfig(star4, fill='white')
-	cpt=2
-	print(cpt)
-
-def clicked4(event):
-	global cpt
-	canvas.itemconfig(star1, fill='yellow')
-	canvas2.itemconfig(star2, fill='yellow')
-	canvas3.itemconfig(star3, fill='yellow')
-	canvas4.itemconfig(star4, fill='yellow')
-	cpt=3
-	print(cpt)
 
 
-def notate_reco():
-	global cpt
-	note=controller_login.note(cpt, user["id_user"], video_ref,video_reco, rank_video)
-	view_recommendation_video.recommendation_video(video_ref, user)
+class ClickableStar(QGraphicsPolygonItem):
+    def __init__(self, x, y, i):
+        star_polygon = QPolygonF([
+            QPointF(25, 2), QPointF(10, 50),
+            QPointF(48, 20), QPointF(2, 20),
+            QPointF(40, 50),
+        ])
+        self.num=i
+        super(ClickableStar, self).__init__(star_polygon)
+        self.setPos(x, y)
+        self.setFlag(QGraphicsPolygonItem.ItemIsSelectable, True)
+        self.setBrush(QColor("white"))
+        self.identity=i
 
-def notate(id_video_ref, id_video_reco, id_user, rank):
-	global star1, star2, star3, star4, canvas, canvas2, canvas3, canvas4, cpt, user, video_ref, video_reco, rank_video
-	view_notate=Tk()
-	user=id_user
-	video_reco=id_video_reco
-	video_ref=id_video_ref
-	rank_video=rank
-	label_notation=Label(view_notate, text=str("Noter la vidéo"))
-	label_notation.grid(row=0, column=0)
-	canvas=Canvas(view_notate, width=50, height=50)
-	canvas2=Canvas(view_notate, width=50, height=50)
-	canvas3=Canvas(view_notate, width=50, height=50)
-	canvas4=Canvas(view_notate, width=50, height=50)
-	star1=canvas.create_polygon([25,2,10,50,48,20,2,20,40,50], outline='black', fill='')
-	star2=canvas2.create_polygon([25,2,10,50,48,20,2,20,40,50], outline='black', fill='')
-	star3=canvas3.create_polygon([25,2,10,50,48,20,2,20,40,50], outline='black', fill='')
-	star4=canvas4.create_polygon([25,2,10,50,48,20,2,20,40,50], outline='black', fill='')	
-	canvas.bind ('<Button-1>', clicked1)
-	canvas2.bind ('<Button-1>', clicked2)
-	canvas3.bind ('<Button-1>', clicked3)
-	canvas4.bind ('<Button-1>', clicked4)
-	canvas.grid(row=1, column=0)
-	canvas2.grid(row=1, column=1)
-	canvas3.grid(row=1, column=2)
-	canvas4.grid(row=1, column=3)
+    def mousePressEvent(self, event):
+        if booleans[self.identity]==False:
+        	booleans[self.identity]=True
+        	i=0
+        	while(i<=self.identity):
+        		stars[i].setBrush(QColor("yellow"))
+        		i=i+1
+        	while(i<len(stars)):
+        		stars[i].setBrush(QColor("white"))
+        		i=i+1
+        else :
+        	booleans[self.identity]=False
+        	i=0
+        	while(i<self.identity):
+        		stars[i].setBrush(QColor("yellow"))
+        		i=i+1
+        	while(i<len(stars)):
+        		stars[i].setBrush(QColor("white"))
+        		i=i+1
 
-	label_star1=Label(view_notate, text="Pas du tout")
-	label_star2=Label(view_notate, text="Un peu")
-	label_star3=Label(view_notate, text="Beaucoup")
-	label_star4=Label(view_notate, text="Parfaitement")
-	label_star1.grid(row=2, column=0)
-	label_star2.grid(row=2, column=1)
-	label_star3.grid(row=2, column=2)
-	label_star4.grid(row=2, column=3)
-	button_note=Button(view_notate, text="noter", command=notate_reco)
-	button_note.grid(row=3, column=3)
-	view_notate.mainloop()
+
+
+class View_notate(QMainWindow):
+    def __init__(self, id_video_ref, id_video_reco, id_user, rank):
+        super().__init__()
+
+        # Set window properties
+        global user,video_ref,video_reco, rank_video
+        user=id_user
+        video_reco=id_video_reco
+        video_ref=id_video_ref
+        rank_video=rank
+        self.scene = QGraphicsScene(self)
+        self.view = QGraphicsView(self.scene)
+        self.view.setSceneRect(0, 0, 600, 300)
+        label = QGraphicsTextItem("Notez la similarité émotionnelle entre la vidéo de référence et la vidéo d'origine !")
+        label.setPos(30,0)
+        self.scene.addItem(label)
+        global stars, booleans
+        booleans=[]
+        stars=[]
+        for i in range(4):
+            star = ClickableStar(i * 80+150, 50, i)
+            stars.append(star)
+            booleans.append(False)
+            self.scene.addItem(star)
+        label = QGraphicsTextItem("Pas du tout")
+        label.setPos(150,130)
+        self.scene.addItem(label)
+        label = QGraphicsTextItem("un peu")
+        label.setPos(230,130)
+        self.scene.addItem(label)
+        label = QGraphicsTextItem("Beaucoup")
+        label.setPos(310,130)
+        self.scene.addItem(label)
+        label = QGraphicsTextItem("Parfaitement")
+        label.setPos(390,130)
+        self.scene.addItem(label)
+        button_notate = QPushButton("Notez")
+        proxy_button = QGraphicsProxyWidget()
+        proxy_button.setWidget(button_notate)
+        proxy_button.setPos(200, 160)  # Adjust the position as needed
+
+        # Connect the button click signal
+        button_notate.clicked.connect(self.notate_reco)
+
+        # Add the button to the first scene
+        self.scene.addItem(proxy_button)
+
+        self.view.show()
+    def notate_reco(self):
+    	global cpt
+    	note=controller_login.note(cpt, user["id_user"], video_ref,video_reco, rank_video)
+    	view_reco=view_recommendation_video.View_Recommendation_video(video_ref, user)
+    	view_reco.show()
+    	self.close()
+
