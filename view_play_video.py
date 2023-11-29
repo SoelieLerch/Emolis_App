@@ -185,7 +185,7 @@ class Canvas(QGraphicsView):
             self.scene.addItem(rect)
             i=i+1
 
-class View_play_video(QMainWindow):
+class View_play_video():
     def __init__(self,video, user):
         super().__init__()
         global window, login, id_video_ref, progressBar, player, myThread, canvas
@@ -280,4 +280,3 @@ def recommendation():
     #destruction du player
     view_recommendation=view_recommendation_video.View_Recommendation_video(id_video_ref, login)
     view_recommendation.show()
-

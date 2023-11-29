@@ -49,7 +49,6 @@ class ClickableStar(QGraphicsPolygonItem):
 class View_notate(QMainWindow):
     def __init__(self, id_video_ref, id_video_reco, id_user, rank):
         super().__init__()
-
         # Set window properties
         global user,video_ref,video_reco, rank_video
         user=id_user

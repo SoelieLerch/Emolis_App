@@ -96,7 +96,6 @@ class View_list_videos(QMainWindow):
 
     def play(self,file):
         self.window3 =view_play_video.View_play_video(file, user_indentity)
-        self.window3.show()
         self.close()
 
     def next(self, cpt2):

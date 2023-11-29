@@ -185,7 +185,7 @@ class Canvas(QGraphicsView):
             self.scene.addItem(rect)
             i=i+1
 
-class View_play_video(QMainWindow):
+class View_play_video():
     def __init__(self,video, user, rank):
         super().__init__()
         global window, login, id_video_ref, progressBar, player, myThread, canvas, id_video, rank_video
@@ -280,5 +280,4 @@ def notate():
     window.close()
     #destruction du player
     view_notate=view_notation.View_notate(id_video_ref, id_video, login, rank_video)
-    view_notate.show()
-
+    #view_notate.show()

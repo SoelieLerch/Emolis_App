@@ -78,5 +78,4 @@ class View_Recommendation_video(QMainWindow):
     	self.close()
     def play(self, video, rank):
     	view_play=view_play_video2.View_play_video(video, user_identity, rank)
-    	view_play.show()
     	self.close()
