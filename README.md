@@ -1,4 +1,4 @@
-This EMOLIS APP, an application which display emotions in real time.
+This is EMOLIS APP, an application which display emotions in real time and suggests emotionally close videos.
 
 I am sharing EMOLIS Data in Zenodoto use the application.
 
